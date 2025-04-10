@@ -1,0 +1,289 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id        Int    @id @default(autoincrement())
+  nome      String
+  matricula String @unique // Alterado para String conforme diagrama
+  senha     String
+  setor     String
+  pontos    Int    @default(0)
+  funcao    String // colaborador, gestor
+
+  // Relações
+  modulosCriados     Modulo[]             @relation("ModuloGestor")
+  conteudosCriados   Conteudo[]           @relation("ConteudoGestor")
+  trilhasCriadas     TrilhaAprendizagem[] @relation("TrilhaGestor")
+  quizCriados        Quiz[]               @relation("QuizGestor")
+  questoesCriadas    Questao[]            @relation("QuestaoGestor")
+  recompensasCriadas Recompensa[]         @relation("RecompensaGestor")
+  desafiosCriados    Desafio[]            @relation("DesafioGestor")
+
+  conteudosAssistidos ConteudoCheck[]
+  quizRespostas       QuizResposta[]
+  pontuacoes          Pontuacao[]
+  moedas              Moeda[]
+  certificados        Certificado[]
+  recompensas         UsuarioRecompensa[]
+  trilhaProgressos    TrilhaProgressoUsuario[]
+
+  @@map("usuarios")
+}
+
+model Modulo {
+  id        Int     @id @default(autoincrement())
+  nome      String
+  descricao String
+  gestor_id Int
+  gestor    Usuario @relation("ModuloGestor", fields: [gestor_id], references: [id])
+
+  // Relações
+  conteudos     Conteudo[]
+  trilhaModulos TrilhaModulo[]
+
+  @@map("modulos")
+}
+
+model Conteudo {
+  id        Int     @id @default(autoincrement())
+  modulo_id Int
+  tipo      String
+  titulo    String
+  descricao String
+  url_video String // Alterado conforme diagrama
+  url_pdf   String? // Adicionado conforme diagrama
+  ordem     Int
+  gestor_id Int
+
+  // Relações
+  modulo         Modulo          @relation(fields: [modulo_id], references: [id])
+  gestor         Usuario         @relation("ConteudoGestor", fields: [gestor_id], references: [id])
+  conteudoChecks ConteudoCheck[]
+  quizzes        Quiz[]
+
+  @@map("conteudos")
+}
+
+model TrilhaAprendizagem {
+  id        Int    @id @default(autoincrement())
+  nome      String
+  descricao String
+  gestor_id Int
+
+  // Relações
+  gestor        Usuario                  @relation("TrilhaGestor", fields: [gestor_id], references: [id])
+  trilhaModulos TrilhaModulo[]
+  certificados  Certificado[]
+  progressos    TrilhaProgressoUsuario[]
+
+  @@map("trilhas_aprendizagem")
+}
+
+model TrilhaModulo {
+  id        Int @id @default(autoincrement())
+  trilha_id Int
+  modulo_id Int // Corrigido de conteudo_id para modulo_id
+  ordem     Int
+
+  // Relações
+  trilha TrilhaAprendizagem @relation(fields: [trilha_id], references: [id])
+  modulo Modulo             @relation(fields: [modulo_id], references: [id])
+
+  @@map("trilha_modulos")
+}
+
+model ConteudoCheck {
+  id             Int      @id @default(autoincrement())
+  usuario_id     Int
+  conteudo_id    Int
+  data_assistido DateTime
+
+  // Relações
+  usuario  Usuario  @relation(fields: [usuario_id], references: [id])
+  conteudo Conteudo @relation(fields: [conteudo_id], references: [id])
+
+  @@map("conteudo_check")
+}
+
+model Quiz {
+  id          Int    @id @default(autoincrement())
+  conteudo_id Int // Alterado de modulo_id para conteudo_id
+  titulo      String
+  descricao   String
+  gestor_id   Int
+
+  // Relações
+  conteudo      Conteudo       @relation(fields: [conteudo_id], references: [id])
+  gestor        Usuario        @relation("QuizGestor", fields: [gestor_id], references: [id])
+  questoes      Questao[]
+  desafioEtapas DesafioEtapa[]
+
+  @@map("quizzes")
+}
+
+model Questao {
+  id        Int    @id @default(autoincrement())
+  quiz_id   Int
+  texto     String
+  gestor_id Int
+
+  // Relações
+  quiz         Quiz           @relation(fields: [quiz_id], references: [id])
+  gestor       Usuario        @relation("QuestaoGestor", fields: [gestor_id], references: [id])
+  alternativas Alternativa[]
+  respostas    QuizResposta[]
+
+  @@map("questoes")
+}
+
+model Alternativa {
+  id         Int     @id @default(autoincrement())
+  questao_id Int
+  texto      String
+  correta    Boolean
+
+  // Relações
+  questao   Questao        @relation(fields: [questao_id], references: [id])
+  respostas QuizResposta[]
+
+  @@map("alternativas")
+}
+
+model QuizResposta {
+  id             Int      @id @default(autoincrement())
+  usuario_id     Int
+  questao_id     Int
+  alternativa_id Int
+  data_resposta  DateTime
+
+  // Relações
+  usuario     Usuario     @relation(fields: [usuario_id], references: [id])
+  questao     Questao     @relation(fields: [questao_id], references: [id])
+  alternativa Alternativa @relation(fields: [alternativa_id], references: [id])
+
+  @@map("quiz_respostas")
+}
+
+model Pontuacao {
+  id            Int      @id @default(autoincrement())
+  usuario_id    Int
+  tipo_evento   String
+  referencia_id Int
+  pontos        Int
+  data_evento   DateTime
+  descricao     String?
+
+  // Relações
+  usuario Usuario @relation(fields: [usuario_id], references: [id])
+
+  @@map("pontuacao")
+}
+
+model Moeda {
+  id            Int      @id @default(autoincrement())
+  usuario_id    Int
+  tipo_evento   String
+  referencia_id Int
+  moedas        Int
+  data_evento   DateTime
+  descricao     String?
+
+  // Relações
+  usuario Usuario @relation(fields: [usuario_id], references: [id])
+
+  @@map("moedas")
+}
+
+model Certificado {
+  id           Int      @id @default(autoincrement())
+  usuario_id   Int
+  trilha_id    Int
+  data_emissao DateTime
+
+  // Relações
+  usuario Usuario            @relation(fields: [usuario_id], references: [id])
+  trilha  TrilhaAprendizagem @relation(fields: [trilha_id], references: [id])
+
+  @@map("certificados")
+}
+
+model Recompensa {
+  id                    Int    @id @default(autoincrement())
+  nome                  String
+  descricao             String
+  moedas_requeridas     Int
+  tipo                  String
+  quantidade_disponivel Int?
+  gestor_id             Int
+
+  // Relações
+  gestor              Usuario             @relation("RecompensaGestor", fields: [gestor_id], references: [id])
+  usuariosRecompensas UsuarioRecompensa[]
+
+  @@map("recompensas")
+}
+
+model UsuarioRecompensa {
+  id            Int      @id @default(autoincrement())
+  usuario_id    Int
+  recompensa_id Int
+  data_resgate  DateTime
+  status        String
+
+  // Relações
+  usuario    Usuario    @relation(fields: [usuario_id], references: [id])
+  recompensa Recompensa @relation(fields: [recompensa_id], references: [id])
+
+  @@map("usuario_recompensas")
+}
+
+model TrilhaProgressoUsuario {
+  id               Int       @id @default(autoincrement())
+  usuario_id       Int
+  trilha_id        Int
+  percentual       Float
+  finalizado       Boolean
+  data_inicio      DateTime
+  data_finalizacao DateTime?
+
+  // Relações
+  usuario Usuario            @relation(fields: [usuario_id], references: [id])
+  trilha  TrilhaAprendizagem @relation(fields: [trilha_id], references: [id])
+
+  @@map("trilha_progresso_usuario")
+}
+
+model Desafio {
+  id        Int    @id @default(autoincrement())
+  nome      String
+  descricao String
+  gestor_id Int
+
+  // Relações
+  gestor        Usuario        @relation("DesafioGestor", fields: [gestor_id], references: [id])
+  desafioEtapas DesafioEtapa[]
+
+  @@map("desafios")
+}
+
+model DesafioEtapa {
+  id         Int @id @default(autoincrement())
+  desafio_id Int
+  quiz_id    Int
+  ordem      Int
+
+  // Relações
+  desafio Desafio @relation(fields: [desafio_id], references: [id])
+  quiz    Quiz    @relation(fields: [quiz_id], references: [id])
+
+  @@map("desafio_etapas")
+}
