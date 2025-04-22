@@ -58,7 +58,6 @@ O servidor estará disponível em `http://localhost:3000` (ou a porta configurad
 Este projeto utiliza o Biome para garantir a consistência do código. Para formatar e verificar o código:
 
 ```bash
-# Verificar formatação e lint
 npm run check
 
 ```
