@@ -39,7 +39,7 @@ export class AuthController {
 					id: usuario.id,
 					matricula: usuario.matricula,
 					nome: usuario.nome,
-					role: usuario.role
+					autoridade: usuario.autoridade
 				},
 				JWT_SECRET,
 				{ expiresIn: '8h' }
@@ -52,7 +52,7 @@ export class AuthController {
 					id: usuario.id,
 					nome: usuario.nome,
 					matricula: usuario.matricula,
-					role: usuario.role
+					autoridade: usuario.autoridade
 				}
 			});
 		} catch (error) {

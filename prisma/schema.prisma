@@ -11,25 +11,29 @@ datasource db {
 }
 
 model Usuario {
-  id        Int    @id @default(autoincrement())
-  nome      String
-  matricula String @unique // Alterado para String conforme diagrama
-  senha     String
-  setor     String
-  pontos    Int    @default(0)
-  funcao    String // colaborador, gestor
+  id         Int    @id @default(autoincrement())
+  gestor_id  Int? // Adicionado campo opcional para o gestor criador
+  nome       String
+  matricula  String @unique // Alterado para String conforme diagrama
+  senha      String
+  setor      String
+  pontos     Int    @default(0)
+  autoridade String // Renomeado de 'funcao' para alinhar com o diagrama
 
   // Relações
+  gestorCriador   Usuario?  @relation("UsuarioCriador", fields: [gestor_id], references: [id]) // Relacionamento opcional com o gestor criador
+  usuariosCriados Usuario[] @relation("UsuarioCriador") // Lista de usuários criados por este gestor
+
   modulosCriados     Modulo[]             @relation("ModuloGestor")
   conteudosCriados   Conteudo[]           @relation("ConteudoGestor")
   trilhasCriadas     TrilhaAprendizagem[] @relation("TrilhaGestor")
-  quizCriados        Quiz[]               @relation("QuizGestor")
+  avaliacoesCriadas  Avaliacao[]          @relation("AvaliacaoGestor") // Renomeado de quizCriados
   questoesCriadas    Questao[]            @relation("QuestaoGestor")
   recompensasCriadas Recompensa[]         @relation("RecompensaGestor")
   desafiosCriados    Desafio[]            @relation("DesafioGestor")
 
   conteudosAssistidos ConteudoCheck[]
-  quizRespostas       QuizResposta[]
+  avaliacaoRespostas  AvaliacaoResposta[] // Renomeado de quizRespostas
   pontuacoes          Pontuacao[]
   moedas              Moeda[]
   certificados        Certificado[]
@@ -47,8 +51,8 @@ model Modulo {
   gestor    Usuario @relation("ModuloGestor", fields: [gestor_id], references: [id])
 
   // Relações
-  conteudos     Conteudo[]
-  trilhaModulos TrilhaModulo[]
+  conteudos   Conteudo[]
+  itensTrilha ItemTrilha[] // Renomeado de trilhaModulos
 
   @@map("modulos")
 }
@@ -68,7 +72,7 @@ model Conteudo {
   modulo         Modulo          @relation(fields: [modulo_id], references: [id])
   gestor         Usuario         @relation("ConteudoGestor", fields: [gestor_id], references: [id])
   conteudoChecks ConteudoCheck[]
-  quizzes        Quiz[]
+  avaliacoes     Avaliacao[] // Renomeado de quizzes
 
   @@map("conteudos")
 }
@@ -80,25 +84,26 @@ model TrilhaAprendizagem {
   gestor_id Int
 
   // Relações
-  gestor        Usuario                  @relation("TrilhaGestor", fields: [gestor_id], references: [id])
-  trilhaModulos TrilhaModulo[]
-  certificados  Certificado[]
-  progressos    TrilhaProgressoUsuario[]
+  gestor       Usuario                  @relation("TrilhaGestor", fields: [gestor_id], references: [id])
+  itensTrilha  ItemTrilha[] // Renomeado de trilhaModulos
+  certificados Certificado[]
+  progressos   TrilhaProgressoUsuario[]
 
   @@map("trilhas_aprendizagem")
 }
 
-model TrilhaModulo {
-  id        Int @id @default(autoincrement())
+// Renomeado de TrilhaModulo para ItemTrilha
+model ItemTrilha {
   trilha_id Int
-  modulo_id Int // Corrigido de conteudo_id para modulo_id
+  modulo_id Int
   ordem     Int
 
   // Relações
   trilha TrilhaAprendizagem @relation(fields: [trilha_id], references: [id])
   modulo Modulo             @relation(fields: [modulo_id], references: [id])
 
-  @@map("trilha_modulos")
+  @@id([trilha_id, modulo_id]) // Chave primária composta
+  @@map("item_trilha") // Atualizado o map
 }
 
 model ConteudoCheck {
@@ -114,33 +119,36 @@ model ConteudoCheck {
   @@map("conteudo_check")
 }
 
-model Quiz {
+// Renomeado de Quiz para Avaliacao
+model Avaliacao {
   id          Int    @id @default(autoincrement())
-  conteudo_id Int // Alterado de modulo_id para conteudo_id
+  conteudo_id Int? // Tornou-se opcional
+  etapa_id    Int? // Adicionado campo etapa_id opcional
   titulo      String
   descricao   String
   gestor_id   Int
 
   // Relações
-  conteudo      Conteudo       @relation(fields: [conteudo_id], references: [id])
-  gestor        Usuario        @relation("QuizGestor", fields: [gestor_id], references: [id])
+  conteudo      Conteudo?      @relation(fields: [conteudo_id], references: [id]) // Relacionamento opcional
+  etapa         DesafioEtapa?  @relation(fields: [etapa_id], references: [id]) // Novo relacionamento com DesafioEtapa
+  gestor        Usuario        @relation("AvaliacaoGestor", fields: [gestor_id], references: [id]) // Atualizado nome da relation
   questoes      Questao[]
-  desafioEtapas DesafioEtapa[]
+  desafioEtapas DesafioEtapa[] @relation("AvaliacaoDesafioEtapa") // Adicionado nome para desambiguação
 
-  @@map("quizzes")
+  @@map("avaliacoes") // Atualizado o map
 }
 
 model Questao {
-  id        Int    @id @default(autoincrement())
-  quiz_id   Int
-  texto     String
-  gestor_id Int
+  id           Int    @id @default(autoincrement())
+  avaliacao_id Int // Renomeado de quiz_id
+  texto        String
+  gestor_id    Int
 
   // Relações
-  quiz         Quiz           @relation(fields: [quiz_id], references: [id])
-  gestor       Usuario        @relation("QuestaoGestor", fields: [gestor_id], references: [id])
+  avaliacao    Avaliacao           @relation(fields: [avaliacao_id], references: [id]) // Atualizado para Avaliacao
+  gestor       Usuario             @relation("QuestaoGestor", fields: [gestor_id], references: [id])
   alternativas Alternativa[]
-  respostas    QuizResposta[]
+  respostas    AvaliacaoResposta[] // Atualizado para AvaliacaoResposta
 
   @@map("questoes")
 }
@@ -152,25 +160,26 @@ model Alternativa {
   correta    Boolean
 
   // Relações
-  questao   Questao        @relation(fields: [questao_id], references: [id])
-  respostas QuizResposta[]
+  questao   Questao             @relation(fields: [questao_id], references: [id])
+  respostas AvaliacaoResposta[] // Atualizado para AvaliacaoResposta
 
   @@map("alternativas")
 }
 
-model QuizResposta {
+// Renomeado de QuizResposta para AvaliacaoResposta
+model AvaliacaoResposta {
   id             Int      @id @default(autoincrement())
   usuario_id     Int
-  questao_id     Int
   alternativa_id Int
   data_resposta  DateTime
 
   // Relações
   usuario     Usuario     @relation(fields: [usuario_id], references: [id])
-  questao     Questao     @relation(fields: [questao_id], references: [id])
   alternativa Alternativa @relation(fields: [alternativa_id], references: [id])
+  Questao     Questao?    @relation(fields: [questaoId], references: [id])
+  questaoId   Int?
 
-  @@map("quiz_respostas")
+  @@map("avaliacao_respostas") // Atualizado o map
 }
 
 model Pontuacao {
@@ -276,14 +285,15 @@ model Desafio {
 }
 
 model DesafioEtapa {
-  id         Int @id @default(autoincrement())
-  desafio_id Int
-  quiz_id    Int
-  ordem      Int
+  id           Int @id @default(autoincrement())
+  desafio_id   Int
+  avaliacao_id Int // Renomeado de quiz_id
+  ordem        Int
 
   // Relações
-  desafio Desafio @relation(fields: [desafio_id], references: [id])
-  quiz    Quiz    @relation(fields: [quiz_id], references: [id])
+  desafio   Desafio     @relation(fields: [desafio_id], references: [id])
+  avaliacao Avaliacao   @relation("AvaliacaoDesafioEtapa", fields: [avaliacao_id], references: [id]) // Atualizado para Avaliacao e nome da relation
+  Avaliacao Avaliacao[]
 
   @@map("desafio_etapas")
 }
