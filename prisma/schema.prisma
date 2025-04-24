@@ -39,6 +39,7 @@ model Usuario {
   certificados        Certificado[]
   recompensas         UsuarioRecompensa[]
   trilhaProgressos    TrilhaProgressoUsuario[]
+  refreshTokens       RefreshToken[] // Nova relação para refresh tokens
 
   @@map("usuarios")
 }
@@ -296,4 +297,19 @@ model DesafioEtapa {
   Avaliacao Avaliacao[]
 
   @@map("desafio_etapas")
+}
+
+// Novo modelo para armazenar refresh tokens
+model RefreshToken {
+  id             Int      @id @default(autoincrement())
+  token          String   @unique
+  usuario_id     Int
+  data_expiracao DateTime
+  revogado       Boolean  @default(false)
+  criado_em      DateTime @default(now())
+
+  // Relações
+  usuario Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
 }
