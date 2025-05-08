@@ -1,0 +1,80 @@
+###
+# @name loginAdmin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "1",
+    "senha": "admin"
+}
+
+###
+# @name verificarToken
+GET http://localhost:3000/auth/verificar
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name refreshToken
+POST http://localhost:3000/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "{{loginAdmin.response.body.refreshToken}}"
+}
+
+###
+# @name logoutUsuario
+POST http://localhost:3000/auth/logout
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "refreshToken": "{{loginAdmin.response.body.refreshToken}}"
+}
+
+### -------------------- USUARIOS --------------------
+
+###
+# @name listarUsuarios
+GET http://localhost:3000/usuarios
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name buscarUsuarioPorId
+GET http://localhost:3000/usuarios/2
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarUsuarioColaborador
+POST http://localhost:3000/usuarios
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Colaborador Teste",
+    "matricula": "colab123",
+    "senha": "senha123",
+    "setor": "TI",
+    "autoridade": "colaborador"
+}
+
+###
+# @name atualizarUsuarioColaborador
+# Supondo que o usuário com ID 2 foi criado no passo anterior (criarUsuarioColaborador)
+# Se o ID for diferente, ajuste o ID na URL e no corpo da requisição, se necessário.
+# O ID do usuário criado é retornado na resposta da requisição criarUsuarioColaborador.
+# Exemplo: {{criarUsuarioColaborador.response.body.id}}
+PUT http://localhost:3000/usuarios/{{criarUsuarioColaborador.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Colaborador Teste Atualizado",
+    "setor": "Desenvolvimento"
+}
+
+###
+# @name excluirUsuarioColaborador
+# Supondo que o usuário com ID retornado por criarUsuarioColaborador ainda existe.
+DELETE http://localhost:3000/usuarios/{{criarUsuarioColaborador.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
