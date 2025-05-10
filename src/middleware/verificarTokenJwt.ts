@@ -1,5 +1,5 @@
 import type { Context, Next } from 'hono';
-import { verify } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'jotanunes_secret_key';
 
@@ -15,7 +15,7 @@ export const verificarTokenJwt = async (c: Context, next: Next) => {
 
 	try {
 		// Verificar e decodificar o token
-		const decoded = verify(token, JWT_SECRET);
+		const decoded = jwt.verify(token, JWT_SECRET);
 
 		// Armazenar os dados do usuário no contexto para uso nas rotas
 		c.set('jwtPayload', decoded);

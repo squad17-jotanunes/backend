@@ -1,6 +1,6 @@
 import { compare } from 'bcrypt';
 import type { Context } from 'hono';
-import { sign } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { randomBytes } from 'node:crypto';
 import { prisma } from '../lib/db';
 
@@ -39,10 +39,8 @@ export class AuthController {
 			const senhaValida = await compare(senha, usuario.senha);
 			if (!senhaValida) {
 				return c.json({ error: 'Matrícula ou senha inválida' }, 401);
-			}
-
-			// Gerar token JWT com duração mais curta agora
-			const token = sign(
+			} // Gerar token JWT com duração mais curta agora
+			const token = jwt.sign(
 				{
 					id: usuario.id,
 					matricula: usuario.matricula,
@@ -137,10 +135,8 @@ export class AuthController {
 				return c.json({ error: 'Refresh token expirado' }, 401);
 			}
 
-			const usuario = tokenArmazenado.usuario;
-
-			// Gerar novo token JWT
-			const novoToken = sign(
+			const usuario = tokenArmazenado.usuario; // Gerar novo token JWT
+			const novoToken = jwt.sign(
 				{
 					id: usuario.id,
 					matricula: usuario.matricula,

@@ -78,3 +78,727 @@ Content-Type: application/json
 # Supondo que o usuário com ID retornado por criarUsuarioColaborador ainda existe.
 DELETE http://localhost:3000/usuarios/{{criarUsuarioColaborador.response.body.id}}
 Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- MODULOS --------------------
+
+###
+# @name listarModulos
+GET http://localhost:3000/modulos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarModulo
+POST http://localhost:3000/modulos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Modulo de Teste",
+    "descricao": "Descrição do Modulo de Teste",
+    "trilhaId": null
+}
+
+###
+# @name buscarModuloPorId
+GET http://localhost:3000/modulos/{{criarModulo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name atualizarModulo
+PUT http://localhost:3000/modulos/{{criarModulo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Modulo de Teste Atualizado",
+    "descricao": "Nova descrição"
+}
+
+###
+# @name excluirModulo
+DELETE http://localhost:3000/modulos/{{criarModulo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- CONTEUDOS --------------------
+
+###
+# @name listarConteudos
+GET http://localhost:3000/conteudos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarConteudo
+POST http://localhost:3000/conteudos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "modulo_id": {{criarModulo.response.body.id}},
+    "tipo": "video",
+    "titulo": "Conteúdo de Teste",
+    "descricao": "Descrição do conteúdo de teste",
+    "url_video": "https://exemplo.com/video.mp4",
+    "url_pdf": "https://exemplo.com/documento.pdf",
+    "ordem": 1
+}
+
+###
+# @name buscarConteudoPorId
+GET http://localhost:3000/conteudos/{{criarConteudo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name listarConteudosPorModulo
+GET http://localhost:3000/conteudos/modulo/{{criarModulo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name atualizarConteudo
+PUT http://localhost:3000/conteudos/{{criarConteudo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "titulo": "Conteúdo de Teste Atualizado",
+    "descricao": "Nova descrição do conteúdo de teste",
+    "ordem": 2
+}
+
+###
+# @name marcarConteudoAssistido
+POST http://localhost:3000/conteudos/{{criarConteudo.response.body.id}}/assistir
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name excluirConteudo
+DELETE http://localhost:3000/conteudos/{{criarConteudo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- TRILHAS --------------------
+
+###
+# @name listarTrilhas
+GET http://localhost:3000/trilhas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarTrilha
+POST http://localhost:3000/trilhas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Trilha de Teste",
+    "descricao": "Descrição da trilha de teste",
+    "modulos": [
+        {
+            "modulo_id": {{criarModulo.response.body.id}},
+            "ordem": 1
+        }
+    ]
+}
+
+###
+# @name buscarTrilhaPorId
+GET http://localhost:3000/trilhas/{{criarTrilha.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name atualizarTrilha
+PUT http://localhost:3000/trilhas/{{criarTrilha.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Trilha de Teste Atualizada",
+    "descricao": "Nova descrição da trilha de teste",
+    "modulos": [
+        {
+            "modulo_id": {{criarModulo.response.body.id}},
+            "ordem": 1
+        }
+    ]
+}
+
+###
+# @name iniciarTrilha
+POST http://localhost:3000/trilhas/{{criarTrilha.response.body.id}}/iniciar
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name obterProgressoTrilha
+GET http://localhost:3000/trilhas/{{criarTrilha.response.body.id}}/progresso
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name excluirTrilha
+DELETE http://localhost:3000/trilhas/{{criarTrilha.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- DESAFIOS --------------------
+
+###
+# @name listarDesafios
+GET http://localhost:3000/desafios
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarDesafio
+POST http://localhost:3000/desafios
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "titulo": "Desafio de Segurança",
+    "descricao": "Desafio sobre práticas de segurança na obra",
+    "pontos": 50,
+    "moedas": 20,
+    "dataInicio": "2025-05-10T00:00:00.000Z",
+    "dataFim": "2025-06-10T23:59:59.999Z"
+}
+
+###
+# @name buscarDesafioPorId
+GET http://localhost:3000/desafios/{{criarDesafio.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name atualizarDesafio
+PUT http://localhost:3000/desafios/{{criarDesafio.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "titulo": "Desafio de Segurança Atualizado",
+    "descricao": "Descrição atualizada do desafio sobre práticas de segurança na obra",
+    "pontos": 75,
+    "moedas": 30,
+    "dataInicio": "2025-05-15T00:00:00.000Z", 
+    "dataFim": "2025-06-15T23:59:59.999Z"
+}
+
+###
+# @name criarEtapaDesafio
+POST http://localhost:3000/desafios/{{criarDesafio.response.body.id}}/etapas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "titulo": "Etapa 1: Equipamentos de Proteção",
+    "descricao": "Identificação dos equipamentos de proteção necessários",
+    "ordem": 1,
+    "tipo": "conteudo",
+    "conteudo": {
+        "tipo": "video",
+        "url_video": "https://exemplo.com/videos/equipamentos-protecao.mp4",
+        "url_pdf": null
+    }
+}
+
+###
+# @name criarEtapaDesafioAvaliacao
+POST http://localhost:3000/desafios/{{criarDesafio.response.body.id}}/etapas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "titulo": "Etapa 2: Avaliação de Conhecimentos",
+    "descricao": "Quiz sobre equipamentos de proteção",
+    "ordem": 2,
+    "tipo": "avaliacao",
+    "avaliacao": {
+        "titulo": "Quiz - Equipamentos de Proteção",
+        "descricao": "Teste seus conhecimentos sobre EPIs",
+        "questoes": [
+            {
+                "texto": "Qual equipamento é obrigatório em todos os tipos de obra?",
+                "alternativas": [
+                    {
+                        "texto": "Capacete",
+                        "correta": true
+                    },
+                    {
+                        "texto": "Luvas de soldador",
+                        "correta": false
+                    },
+                    {
+                        "texto": "Protetor facial",
+                        "correta": false
+                    }
+                ]
+            }
+        ]
+    }
+}
+
+###
+# @name listarEtapasDesafio
+GET http://localhost:3000/desafios/{{criarDesafio.response.body.id}}/etapas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name buscarEtapaPorId
+GET http://localhost:3000/etapas/{{criarEtapaDesafio.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name atualizarEtapaDesafio
+PUT http://localhost:3000/etapas/{{criarEtapaDesafio.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "titulo": "Etapa 1: Equipamentos de Proteção (Atualizado)",
+    "descricao": "Descrição atualizada da etapa",
+    "ordem": 1,
+    "tipo": "conteudo",
+    "conteudo": {
+        "tipo": "video",
+        "url_video": "https://exemplo.com/videos/equipamentos-protecao-v2.mp4",
+        "url_pdf": "https://exemplo.com/materiais/guia-epi.pdf"
+    }
+}
+
+###
+# @name marcarEtapaDesafioCompleta
+POST http://localhost:3000/etapas/{{criarEtapaDesafio.response.body.id}}/concluir
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name submeterRespostasEtapaAvaliacao
+POST http://localhost:3000/etapas/{{criarEtapaDesafioAvaliacao.response.body.id}}/respostas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "respostas": [
+        {
+            "questao_id": "{{criarEtapaDesafioAvaliacao.response.body.avaliacao.questoes[0].id}}",
+            "alternativa_id": "{{criarEtapaDesafioAvaliacao.response.body.avaliacao.questoes[0].alternativas[0].id}}"
+        }
+    ]
+}
+
+###
+# @name excluirEtapaDesafio
+DELETE http://localhost:3000/etapas/{{criarEtapaDesafioAvaliacao.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name excluirDesafio
+DELETE http://localhost:3000/desafios/{{criarDesafio.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- RECOMPENSAS --------------------
+
+###
+# @name listarRecompensas
+GET http://localhost:3000/recompensas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarRecompensa
+POST http://localhost:3000/recompensas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Vale Café",
+    "descricao": "Vale para um café na cafeteria da empresa",
+    "custo_moedas": 50,
+    "quantidade_disponivel": 20,
+    "imagem_url": "https://exemplo.com/imagens/vale-cafe.jpg"
+}
+
+###
+# @name buscarRecompensaPorId
+GET http://localhost:3000/recompensas/{{criarRecompensa.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name atualizarRecompensa
+PUT http://localhost:3000/recompensas/{{criarRecompensa.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Vale Café Premiun",
+    "descricao": "Vale para um café premium na cafeteria da empresa",
+    "custo_moedas": 75,
+    "quantidade_disponivel": 15,
+    "imagem_url": "https://exemplo.com/imagens/vale-cafe-premium.jpg"
+}
+
+###
+# @name resgatarRecompensa
+POST http://localhost:3000/recompensas/{{criarRecompensa.response.body.id}}/resgatar
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name listarResgatesUsuario
+GET http://localhost:3000/usuarios/recompensas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name excluirRecompensa
+DELETE http://localhost:3000/recompensas/{{criarRecompensa.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- GAMIFICAÇÃO --------------------
+
+###
+# @name consultarPontuacaoUsuario
+GET http://localhost:3000/usuarios/pontuacao
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name consultarMoedasUsuario
+GET http://localhost:3000/usuarios/moedas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name listarRanking
+GET http://localhost:3000/ranking
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name listarRankingPorSetor
+GET http://localhost:3000/ranking/setor/TI
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- CERTIFICADOS --------------------
+
+###
+# @name listarCertificadosUsuario
+GET http://localhost:3000/usuarios/certificados
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name gerarCertificadoTrilha
+POST http://localhost:3000/trilhas/{{criarTrilha.response.body.id}}/certificado
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name baixarCertificado
+GET http://localhost:3000/certificados/{{gerarCertificadoTrilha.response.body.id}}/download
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- RELATÓRIOS --------------------
+
+###
+# @name relatorioProgressoGeral
+GET http://localhost:3000/relatorios/progresso
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name relatorioProgressoPorSetor
+GET http://localhost:3000/relatorios/progresso/setor/TI
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name relatorioEngajamento
+GET http://localhost:3000/relatorios/engajamento
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "dataInicio": "2025-01-01",
+    "dataFim": "2025-05-31"
+}
+
+###
+# @name exportarRelatorio
+POST http://localhost:3000/relatorios/exportar
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "tipo": "progresso",
+    "formato": "csv",
+    "filtros": {
+        "setor": "TI",
+        "dataInicio": "2025-01-01",
+        "dataFim": "2025-05-31"
+    }
+}
+
+### -------------------- DASHBOARDS E ESTATÍSTICAS --------------------
+
+###
+# @name estatisticasGerais
+GET http://localhost:3000/dashboard/estatisticas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name estatisticasTrimestrais
+GET http://localhost:3000/dashboard/estatisticas/trimestrais
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name usuariosAtivos
+GET http://localhost:3000/dashboard/usuarios/ativos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name trilhasMaisPopulares
+GET http://localhost:3000/dashboard/trilhas/populares
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name taxaAprovacaoAvaliacoes
+GET http://localhost:3000/dashboard/avaliacoes/aprovacao
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "periodo": "mensal"
+}
+
+###
+# @name acompanhamentoMetas
+GET http://localhost:3000/dashboard/metas/acompanhamento
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- NOTIFICAÇÕES --------------------
+
+###
+# @name listarNotificacoesUsuario
+GET http://localhost:3000/notificacoes
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarNotificacao
+POST http://localhost:3000/notificacoes
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "tipo": "mensagem",
+    "titulo": "Nova trilha disponível",
+    "mensagem": "Uma nova trilha sobre segurança foi disponibilizada. Confira!",
+    "destinatarios": [
+        {
+            "tipo": "usuario",
+            "id": "{{criarUsuarioColaborador.response.body.id}}"
+        }
+    ]
+}
+
+###
+# @name criarNotificacaoPorSetor
+POST http://localhost:3000/notificacoes
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "tipo": "aviso",
+    "titulo": "Treinamento obrigatório",
+    "mensagem": "Novo treinamento obrigatório disponível para seu setor.",
+    "destinatarios": [
+        {
+            "tipo": "setor",
+            "valor": "TI"
+        }
+    ]
+}
+
+###
+# @name marcarNotificacaoComoLida
+PUT http://localhost:3000/notificacoes/{{listarNotificacoesUsuario.response.body[0].id}}/ler
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name excluirNotificacao
+DELETE http://localhost:3000/notificacoes/{{listarNotificacoesUsuario.response.body[0].id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+### -------------------- CONFIGURAÇÕES --------------------
+
+###
+# @name obterConfiguracoesSistema
+GET http://localhost:3000/configuracoes
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name atualizarConfiguracoesSistema
+PUT http://localhost:3000/configuracoes
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nomeEmpresa": "Jotanunes Construtora",
+    "logotipo": "https://exemplo.com/logo-jotanunes.png",
+    "coresPersonalizadas": {
+        "primaria": "#0056b3",
+        "secundaria": "#f8f9fa",
+        "terciaria": "#28a745"
+    },
+    "configuracoesCertificados": {
+        "assinatura": "https://exemplo.com/assinatura-diretor.png",
+        "textoPersonalizado": "Certificamos que o colaborador concluiu com êxito o treinamento"
+    }
+}
+
+###
+# @name obterConfiguracoesUsuario
+GET http://localhost:3000/usuarios/configuracoes
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name atualizarConfiguracoesUsuario
+PUT http://localhost:3000/usuarios/configuracoes
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "receberNotificacoesEmail": true,
+    "receberNotificacoesAplicativo": true,
+    "temaInterface": "claro"
+}
+
+### -------------------- RECURSOS ADICIONAIS --------------------
+
+###
+# @name conquistasUsuario
+GET http://localhost:3000/usuarios/conquistas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name historicoAtividadesUsuario
+GET http://localhost:3000/usuarios/atividades
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "dataInicio": "2025-05-01",
+    "dataFim": "2025-05-08",
+    "tipo": "all" // "avaliacao", "conteudo", "desafio", "recompensa"
+}
+
+###
+# @name sugerirProximoConteudo
+GET http://localhost:3000/usuarios/sugestoes
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name adicionarComentarioConteudo
+POST http://localhost:3000/conteudos/{{criarConteudo.response.body.id}}/comentarios
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "texto": "Este conteúdo foi muito útil para entender os procedimentos de segurança.",
+    "avaliacao": 5 // 1-5 estrelas
+}
+
+###
+# @name listarComentariosConteudo
+GET http://localhost:3000/conteudos/{{criarConteudo.response.body.id}}/comentarios
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarEvento
+POST http://localhost:3000/eventos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "titulo": "Workshop de Segurança",
+    "descricao": "Workshop sobre práticas de segurança na obra",
+    "data": "2025-06-15T14:00:00.000Z",
+    "local": "Auditório principal",
+    "vagas": 30,
+    "pontos": 100,
+    "moedas": 50
+}
+
+###
+# @name listarEventos
+GET http://localhost:3000/eventos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name inscreverSeEvento
+POST http://localhost:3000/eventos/{{criarEvento.response.body.id}}/inscricao
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name confirmarPresencaEvento
+POST http://localhost:3000/eventos/{{criarEvento.response.body.id}}/presenca
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "codigo": "WORKSHOP-2025",
+    "usuario_id": "{{criarUsuarioColaborador.response.body.id}}"
+}
+
+###
+# @name gerarEstatisticasPersonalizadas
+POST http://localhost:3000/relatorios/personalizado
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "metricas": ["usuarios_ativos", "taxa_conclusao", "media_pontuacao"],
+    "agrupamento": "semanal",
+    "dataInicio": "2025-01-01",
+    "dataFim": "2025-05-31",
+    "filtros": {
+        "setor": "TI",
+        "idade_minima": 20,
+        "idade_maxima": 40
+    }
+}
+
+###
+# @name definirMetasDesempenho
+POST http://localhost:3000/metas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "titulo": "Meta de conclusão de treinamentos",
+    "descricao": "Completar 80% dos treinamentos de segurança até o fim do trimestre",
+    "tipo": "conclusao_trilhas",
+    "valor_meta": 80,
+    "data_limite": "2025-09-30T23:59:59.999Z",
+    "recompensa_pontos": 500,
+    "recompensa_moedas": 200,
+    "destinatarios": [
+        {
+            "tipo": "setor",
+            "valor": "TI"
+        }
+    ]
+}
+
+###
+# @name acompanhamentoMetasIndividuais
+GET http://localhost:3000/usuarios/metas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name gerarCodigo2FA
+POST http://localhost:3000/usuarios/2fa/gerar
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name ativar2FA
+POST http://localhost:3000/usuarios/2fa/ativar
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "codigo": "123456" // Código gerado pelo app autenticador
+}
+
+###
+# @name desativar2FA
+POST http://localhost:3000/usuarios/2fa/desativar
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "senha": "senha123" // Para confirmar a identidade do usuário
+}

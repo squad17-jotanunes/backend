@@ -89,6 +89,7 @@ model TrilhaAprendizagem {
   itensTrilha  ItemTrilha[] // Renomeado de trilhaModulos
   certificados Certificado[]
   progressos   TrilhaProgressoUsuario[]
+  avaliacao    Avaliacao[]
 
   @@map("trilhas_aprendizagem")
 }
@@ -125,16 +126,18 @@ model Avaliacao {
   id          Int    @id @default(autoincrement())
   conteudo_id Int? // Tornou-se opcional
   etapa_id    Int? // Adicionado campo etapa_id opcional
+  trilha_id   Int? // Adicionado campo trilha_id opcional
   titulo      String
   descricao   String
   gestor_id   Int
 
   // Relações
-  conteudo      Conteudo?      @relation(fields: [conteudo_id], references: [id]) // Relacionamento opcional
-  etapa         DesafioEtapa?  @relation(fields: [etapa_id], references: [id]) // Novo relacionamento com DesafioEtapa
-  gestor        Usuario        @relation("AvaliacaoGestor", fields: [gestor_id], references: [id]) // Atualizado nome da relation
+  conteudo      Conteudo?           @relation(fields: [conteudo_id], references: [id]) // Relacionamento opcional
+  trilha        TrilhaAprendizagem? @relation(fields: [trilha_id], references: [id]) // Relacionamento opcional
+  etapa         DesafioEtapa?       @relation(fields: [etapa_id], references: [id]) // Novo relacionamento com DesafioEtapa
+  gestor        Usuario             @relation("AvaliacaoGestor", fields: [gestor_id], references: [id]) // Atualizado nome da relation
   questoes      Questao[]
-  desafioEtapas DesafioEtapa[] @relation("AvaliacaoDesafioEtapa") // Adicionado nome para desambiguação
+  desafioEtapas DesafioEtapa[]      @relation("AvaliacaoDesafioEtapa") // Adicionado nome para desambiguação
 
   @@map("avaliacoes") // Atualizado o map
 }
