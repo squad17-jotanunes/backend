@@ -1,5 +1,5 @@
 import type { Context, Next } from 'hono';
-import jwt from 'jsonwebtoken';
+import { verify } from 'hono/jwt';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'jotanunes_secret_key';
 
@@ -12,10 +12,9 @@ export const verificarTokenJwt = async (c: Context, next: Next) => {
 	}
 
 	const token = authHeader.substring(7); // Remover "Bearer " do token
-
 	try {
-		// Verificar e decodificar o token
-		const decoded = jwt.verify(token, JWT_SECRET);
+		// Verificar e decodificar o token usando o Hono JWT
+		const decoded = await verify(token, JWT_SECRET);
 
 		// Armazenar os dados do usuário no contexto para uso nas rotas
 		c.set('jwtPayload', decoded);
@@ -23,9 +22,15 @@ export const verificarTokenJwt = async (c: Context, next: Next) => {
 		// Continuar para a próxima middleware ou rota
 		await next();
 	} catch (error: unknown) {
-		if (error instanceof Error && error.name === 'TokenExpiredError') {
+		// Mensagens de erro baseadas no tipo de erro
+		const errorMessage =
+			error instanceof Error ? error.message : 'Token inválido';
+
+		// Verificar se é um erro de token expirado baseado na mensagem de erro
+		if (errorMessage.includes('expired')) {
 			return c.json({ error: 'Token expirado' }, 401);
 		}
+
 		return c.json({ error: 'Token inválido' }, 401);
 	}
 };

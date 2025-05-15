@@ -1,0 +1,71 @@
+###
+# @name loginAdmin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "1",
+    "senha": "admin"
+}
+
+### -------------------- CONTEUDOS --------------------
+
+###
+# @name listarConteudos
+GET http://localhost:3000/conteudos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name buscarConteudoPorId
+# Substitua {id} pelo ID do conteúdo que deseja consultar
+GET http://localhost:3000/conteudos/1
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name listarConteudosPorModulo
+# Substitua {moduloId} pelo ID do módulo que deseja consultar os conteúdos
+GET http://localhost:3000/conteudos/modulo/1
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarConteudo
+POST http://localhost:3000/conteudos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "modulo_id": 1,
+    "tipo": "video",
+    "titulo": "Introdução ao curso",
+    "descricao": "Vídeo introdutório sobre a plataforma de treinamentos",
+    "url_video": "https://exemplo.com/videos/intro.mp4",
+    "url_pdf": "https://exemplo.com/docs/intro.pdf",
+    "ordem": 1
+}
+
+###
+# @name atualizarConteudo
+# O ID do conteúdo criado é retornado na resposta da requisição criarConteudo.
+# Exemplo: {{criarConteudo.response.body.id}}
+PUT http://localhost:3000/conteudos/{{criarConteudo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "titulo": "Introdução atualizada ao curso",
+    "descricao": "Vídeo introdutório revisado sobre a plataforma de treinamentos",
+    "ordem": 1
+}
+
+###
+# @name excluirConteudo
+# Supondo que o conteúdo com ID retornado por criarConteudo ainda existe.
+DELETE http://localhost:3000/conteudos/{{criarConteudo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name marcarConteudoComoAssistido
+# Para marcar um conteúdo como assistido por um usuário (simulando que um colaborador assistiu)
+# Substitua {id} pelo ID do conteúdo que deseja marcar como assistido
+POST http://localhost:3000/conteudos/1/assistir
+Authorization: Bearer {{loginAdmin.response.body.token}}

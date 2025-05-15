@@ -1,0 +1,52 @@
+###
+# @name loginAdmin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "1",
+    "senha": "admin"
+}
+
+### -------------------- MODULOS --------------------
+
+###
+# @name listarModulos
+GET http://localhost:3000/modulos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name buscarModuloPorId
+# Substitua {id} pelo ID do módulo que deseja consultar
+GET http://localhost:3000/modulos/1
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarModulo
+POST http://localhost:3000/modulos
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Módulo de Introdução",
+    "descricao": "Introdução aos conceitos básicos de construção civil"
+}
+
+###
+# @name atualizarModulo
+# O ID do módulo criado é retornado na resposta da requisição criarModulo.
+# Exemplo: {{criarModulo.response.body.id}}
+PUT http://localhost:3000/modulos/{{criarModulo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Módulo de Introdução Atualizado",
+    "descricao": "Conceitos fundamentais de construção civil e engenharia"
+}
+
+###
+# @name excluirModulo
+# Supondo que o módulo com ID retornado por criarModulo ainda existe.
+DELETE http://localhost:3000/modulos/{{criarModulo.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}

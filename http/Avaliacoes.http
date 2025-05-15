@@ -1,0 +1,132 @@
+@baseUrl = http://localhost:3000
+@token = {{login.response.body.token}}
+
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "1",
+    "senha": "admin"
+}
+
+### Listar todas as avaliações
+GET {{baseUrl}}/avaliacoes
+Authorization: Bearer {{token}}
+
+### Buscar avaliação por ID
+GET {{baseUrl}}/avaliacoes/1
+Authorization: Bearer {{token}}
+
+### Criar nova avaliação
+POST {{baseUrl}}/avaliacoes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "titulo": "Avaliação sobre construção civil",
+  "descricao": "Esta avaliação verifica os conhecimentos básicos sobre construção civil",
+  "conteudo_id": 1
+}
+
+### Criar nova avaliação para uma trilha
+POST {{baseUrl}}/avaliacoes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "titulo": "Avaliação Final da Trilha",
+  "descricao": "Esta avaliação verifica os conhecimentos adquiridos na trilha completa",
+  "trilha_id": 1
+}
+
+### Atualizar avaliação
+PUT {{baseUrl}}/avaliacoes/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "titulo": "Avaliação sobre construção civil - Atualizada",
+  "descricao": "Descrição atualizada da avaliação"
+}
+
+### Excluir avaliação
+DELETE {{baseUrl}}/avaliacoes/1
+Authorization: Bearer {{token}}
+
+### Listar questões de uma avaliação
+GET {{baseUrl}}/avaliacoes/1/questoes
+Authorization: Bearer {{token}}
+
+### Criar nova questão
+POST {{baseUrl}}/avaliacoes/1/questoes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "texto": "Qual é o principal componente do concreto?",
+  "alternativas": [
+    {
+      "texto": "Cimento",
+      "correta": true
+    },
+    {
+      "texto": "Areia",
+      "correta": false
+    },
+    {
+      "texto": "Pedra",
+      "correta": false
+    },
+    {
+      "texto": "Água",
+      "correta": false
+    }
+  ]
+}
+
+### Listar alternativas de uma questão
+GET {{baseUrl}}/avaliacoes/questoes/1/alternativas
+Authorization: Bearer {{token}}
+
+### Adicionar alternativa à questão
+POST {{baseUrl}}/avaliacoes/questoes/1/alternativas
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "texto": "Nova alternativa",
+  "correta": false
+}
+
+### Atualizar alternativa
+PUT {{baseUrl}}/avaliacoes/alternativas/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "texto": "Alternativa atualizada",
+  "correta": true
+}
+
+### Excluir alternativa
+DELETE {{baseUrl}}/avaliacoes/alternativas/1
+Authorization: Bearer {{token}}
+
+### Submeter respostas de uma avaliação
+POST {{baseUrl}}/avaliacoes/1/responder
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "respostas": [
+    {
+      "questao_id": 1,
+      "alternativa_id": 1
+    },
+    {
+      "questao_id": 2,
+      "alternativa_id": 5
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { compare } from 'bcrypt';
+import * as honoJwt from 'hono/jwt';
 import { testClient } from 'hono/testing';
-import { sign } from 'jsonwebtoken';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { prisma } from '../lib/db';
 import auth from '../routes/auth';
@@ -73,11 +73,14 @@ vi.mock('bcrypt', () => {
 	};
 });
 
-// Mock para jsonwebtoken
-vi.mock('jsonwebtoken', () => {
+// Mock para o módulo Hono JWT
+vi.mock('hono/jwt', () => {
 	return {
-		sign: vi.fn().mockReturnValue('token_jwt_mockado'),
-		verify: vi.fn()
+		sign: vi.fn().mockResolvedValue('token_jwt_mockado'),
+		verify: vi
+			.fn()
+			.mockResolvedValue({ id: 1, nome: 'Usuário Mock', autoridade: 'GESTOR' }),
+		decode: vi.fn()
 	};
 });
 
@@ -182,7 +185,7 @@ describe('Rotas de autenticação', () => {
 			vi.mocked(compare).mockImplementationOnce(() => Promise.resolve(true));
 
 			// Mock do sign retornando um token
-			vi.mocked(sign).mockReturnValueOnce('token_jwt_mockado' as never);
+			vi.mocked(honoJwt.sign).mockResolvedValueOnce('token_jwt_mockado');
 
 			const res = await client.login.$post({
 				json: {
@@ -221,7 +224,7 @@ describe('Rotas de autenticação', () => {
 			vi.mocked(compare).mockImplementationOnce(() => Promise.resolve(true));
 
 			// Mock do sign retornando um token
-			vi.mocked(sign).mockReturnValueOnce('token_jwt_mockado' as never);
+			vi.mocked(honoJwt.sign).mockResolvedValueOnce('token_jwt_mockado');
 
 			// Mock do prisma.refreshToken.create
 			vi.mocked(prisma.refreshToken.create).mockResolvedValueOnce({
@@ -305,7 +308,7 @@ describe('Rotas de autenticação', () => {
 			} as RefreshTokenComUsuario);
 
 			// Mock do sign retornando um token
-			vi.mocked(sign).mockReturnValueOnce('novo_token_jwt_mockado' as never);
+			vi.mocked(honoJwt.sign).mockResolvedValueOnce('novo_token_jwt_mockado');
 
 			const res = await client.refresh.$post({
 				json: {

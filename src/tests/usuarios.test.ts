@@ -97,10 +97,14 @@ vi.mock('bcrypt', () => {
 	};
 });
 
-// Mock para jsonwebtoken
-vi.mock('jsonwebtoken', () => {
+// Mock para o módulo Hono JWT
+vi.mock('hono/jwt', () => {
 	return {
-		verify: vi.fn()
+		sign: vi.fn().mockResolvedValue('token_jwt_mockado'),
+		verify: vi
+			.fn()
+			.mockResolvedValue({ id: 1, nome: 'Usuário Mock', autoridade: 'GESTOR' }),
+		decode: vi.fn()
 	};
 });
 

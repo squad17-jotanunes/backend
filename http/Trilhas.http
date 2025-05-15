@@ -1,0 +1,90 @@
+###
+# @name loginAdmin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "1",
+    "senha": "admin"
+}
+
+### -------------------- TRILHAS --------------------
+
+###
+# @name listarTrilhas
+GET http://localhost:3000/trilhas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name buscarTrilhaPorId
+# Substitua {id} pelo ID da trilha que deseja consultar
+GET http://localhost:3000/trilhas/1
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name criarTrilha
+POST http://localhost:3000/trilhas
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Trilha de Construção Civil Básica",
+    "descricao": "Trilha introdutória para novos colaboradores da área de construção",
+    "modulos": [
+        {
+            "modulo_id": 1,
+            "ordem": 1
+        },
+        {
+            "modulo_id": 2,
+            "ordem": 2
+        }
+    ]
+}
+
+###
+# @name atualizarTrilha
+# O ID da trilha criada é retornado na resposta da requisição criarTrilha.
+# Exemplo: {{criarTrilha.response.body.id}}
+PUT http://localhost:3000/trilhas/{{criarTrilha.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+Content-Type: application/json
+
+{
+    "nome": "Trilha de Construção Civil Atualizada",
+    "descricao": "Trilha introdutória revisada para novos colaboradores da área de construção",
+    "modulos": [
+        {
+            "modulo_id": 1,
+            "ordem": 1
+        },
+        {
+            "modulo_id": 2,
+            "ordem": 2
+        },
+        {
+            "modulo_id": 3,
+            "ordem": 3
+        }
+    ]
+}
+
+###
+# @name excluirTrilha
+# Supondo que a trilha com ID retornado por criarTrilha ainda existe.
+DELETE http://localhost:3000/trilhas/{{criarTrilha.response.body.id}}
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name iniciarTrilha
+# Para iniciar uma trilha para o usuário autenticado
+# Substitua {id} pelo ID da trilha que deseja iniciar
+POST http://localhost:3000/trilhas/1/iniciar
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name obterProgressoTrilha
+# Para obter o progresso do usuário na trilha
+# Substitua {id} pelo ID da trilha que deseja verificar o progresso
+GET http://localhost:3000/trilhas/1/progresso
+Authorization: Bearer {{loginAdmin.response.body.token}}

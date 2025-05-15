@@ -1,0 +1,59 @@
+### -------------------- AUTENTICAÇÃO --------------------
+
+###
+# @name login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "1",
+    "senha": "admin"
+}
+
+###
+# @name loginColaborador
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "colab123",
+    "senha": "senha123"
+}
+
+###
+# @name loginComLembrar
+# Login com opção para manter sessão (gera refresh token)
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "1",
+    "senha": "admin",
+    "manterSessao": true
+}
+
+###
+# @name verificarToken
+# Verifica se o token JWT é válido
+GET http://localhost:3000/auth/verificar
+Authorization: Bearer {{login.response.body.token}}
+
+###
+# @name refreshToken
+# Renovar o token JWT usando refresh token
+POST http://localhost:3000/auth/refresh
+Content-Type: application/json
+
+{
+    "refreshToken": "{{loginComLembrar.response.body.refreshToken}}"
+}
+
+###
+# @name logout
+# Revoga o refresh token
+POST http://localhost:3000/auth/logout
+Content-Type: application/json
+
+{
+    "refreshToken": "{{loginComLembrar.response.body.refreshToken}}"
+}

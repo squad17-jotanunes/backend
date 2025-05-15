@@ -78,7 +78,7 @@ vi.mock('../middleware/verificarTokenJwt', () => {
 vi.mock('../middleware/verificarAutoridade', () => {
 	return {
 		verificarAutoridade: vi.fn().mockImplementation(() => {
-			return async (c, next) => {
+			return async (c: Context, next: () => Promise<void>) => {
 				// Simula verificação de autoridade passando para o próximo middleware
 				await next();
 			};
@@ -118,6 +118,7 @@ vi.mock('../lib/db', () => {
 	};
 });
 
+import type { Context } from 'hono';
 // Importando o prisma mockado
 import { prisma } from '../lib/db';
 

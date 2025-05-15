@@ -51,8 +51,8 @@ type TrilhaProgressoUsuario = {
 	id: number;
 	trilha_id: number;
 	usuario_id: number;
-	data_inicio: Date;
-	data_conclusao: Date | null;
+	data_inicio: Date | string;
+	data_conclusao: Date | null | string;
 	status: string;
 	progresso: number;
 };
@@ -291,11 +291,12 @@ describe('Rotas de trilhas de aprendizagem', () => {
 			};
 
 			// Mock do progresso criado
+			const dataInicioMock = '2025-05-15T19:27:41.542Z';
 			const progressoMock: TrilhaProgressoUsuario = {
 				id: 1,
 				trilha_id: 1,
 				usuario_id: 1,
-				data_inicio: new Date(),
+				data_inicio: dataInicioMock, // Usando string para representar a data
 				data_conclusao: null,
 				status: 'EM_ANDAMENTO',
 				progresso: 0

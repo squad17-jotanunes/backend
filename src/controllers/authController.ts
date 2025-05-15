@@ -1,6 +1,6 @@
 import { compare } from 'bcrypt';
 import type { Context } from 'hono';
-import jwt from 'jsonwebtoken';
+import { sign } from 'hono/jwt';
 import { randomBytes } from 'node:crypto';
 import { prisma } from '../lib/db';
 
@@ -11,6 +11,7 @@ const REFRESH_SECRET =
 
 // Duração dos tokens
 const ACCESS_TOKEN_EXPIRY = '1h'; // Token principal expira em 1 hora
+const ACCESS_TOKEN_EXPIRY_SECONDS = 3600; // Em segundos para o payload JWT
 const REFRESH_TOKEN_EXPIRY = 30; // Refresh token expira em 30 dias
 const REFRESH_TOKEN_EXPIRY_MS = REFRESH_TOKEN_EXPIRY * 24 * 60 * 60 * 1000; // 30 dias em milissegundos
 
@@ -39,16 +40,22 @@ export class AuthController {
 			const senhaValida = await compare(senha, usuario.senha);
 			if (!senhaValida) {
 				return c.json({ error: 'Matrícula ou senha inválida' }, 401);
-			} // Gerar token JWT com duração mais curta agora
-			const token = jwt.sign(
+			}
+
+			// Calcular o tempo de expiração para o payload (em segundos desde a época UNIX)
+			const expiresAt =
+				Math.floor(Date.now() / 1000) + ACCESS_TOKEN_EXPIRY_SECONDS;
+
+			// Gerar token JWT usando Hono JWT
+			const token = await sign(
 				{
 					id: usuario.id,
 					matricula: usuario.matricula,
 					nome: usuario.nome,
-					autoridade: usuario.autoridade
+					autoridade: usuario.autoridade,
+					exp: expiresAt // Tempo de expiração (em segundos desde a época UNIX)
 				},
-				JWT_SECRET,
-				{ expiresIn: ACCESS_TOKEN_EXPIRY }
+				JWT_SECRET
 			);
 
 			// Dados de resposta
@@ -134,17 +141,22 @@ export class AuthController {
 			if (new Date() > tokenArmazenado.data_expiracao) {
 				return c.json({ error: 'Refresh token expirado' }, 401);
 			}
+			const usuario = tokenArmazenado.usuario;
 
-			const usuario = tokenArmazenado.usuario; // Gerar novo token JWT
-			const novoToken = jwt.sign(
+			// Calcular o tempo de expiração para o payload (em segundos desde a época UNIX)
+			const expiresAt =
+				Math.floor(Date.now() / 1000) + ACCESS_TOKEN_EXPIRY_SECONDS;
+
+			// Gerar novo token JWT usando Hono JWT
+			const novoToken = await sign(
 				{
 					id: usuario.id,
 					matricula: usuario.matricula,
 					nome: usuario.nome,
-					autoridade: usuario.autoridade
+					autoridade: usuario.autoridade,
+					exp: expiresAt // Tempo de expiração (em segundos desde a época UNIX)
 				},
-				JWT_SECRET,
-				{ expiresIn: ACCESS_TOKEN_EXPIRY }
+				JWT_SECRET
 			);
 
 			// Verificar se precisamos gerar um novo refresh token (opcional - rotação de tokens)

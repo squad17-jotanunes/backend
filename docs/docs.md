@@ -58,7 +58,7 @@ Este documento descreve a arquitetura, funcionalidades e o roadmap de desenvolvi
   - `verificarAutoridade`: Verifica se o usuário tem o papel necessário (e.g., 'gestor', 'admin') para acessar a rota.
   - `verificarAcessoPerfil`: Controla o acesso a rotas de perfil de usuário (próprio usuário ou gestor/admin).
 - **Configuração Inicial do Servidor:** `src/index.ts` configura o servidor Hono e o CORS.
-- **Roteamento Básico:** `src/router.ts` define a estrutura inicial de rotas, incluindo `/auth`, `/usuarios`, `/modulos`, `/conteudos` e `/trilhas`.
+- **Roteamento Básico:** `src/router.ts` define a estrutura inicial de rotas, incluindo `/auth`, `/usuarios`, `/modulos`, `/conteudos`, `/trilhas` e `/avaliacoes`.
 
 ### Arquivos Principais
 
@@ -76,6 +76,8 @@ Este documento descreve a arquitetura, funcionalidades e o roadmap de desenvolvi
 - `src/controllers/modulosController.ts`: Lógica de negócio para CRUD de módulos.
 - `src/controllers/conteudosController.ts`: Lógica de negócio para CRUD de conteúdos.
 - `src/controllers/trilhasController.ts`: Lógica de negócio para trilhas de aprendizagem e progresso.
+- `src/routes/avaliacoes.ts`: Rotas específicas de avaliações.
+- `src/controllers/avaliacoesController.ts`: Lógica de negócio para CRUD de avaliações, questões e alternativas.
 - `src/middleware/verificarTokenJwt.ts`: Middleware para validação de token JWT.
 - `src/middleware/verificarAutoridade.ts`: Middleware para verificação de papel.
 - `src/middleware/verificarAcessoPerfil.ts`: Middleware para controle de acesso a perfis.
@@ -91,26 +93,27 @@ Este documento descreve a arquitetura, funcionalidades e o roadmap de desenvolvi
 4. ✅ **Rastreamento de Progresso Básico:**
    - Marcar conteúdo como assistido (`ConteudoCheck`).
    - Calcular e armazenar progresso na trilha (`TrilhaProgressoUsuario`).
-5. **Sistema de Avaliação (Básico):**
+5. ✅ **Sistema de Avaliação (Básico):**
    - CRUD Avaliações (associadas a Conteúdos).
    - CRUD Questões e Alternativas.
    - Submissão de Respostas (`AvaliacaoRespostas`).
-   - Cálculo de nota (lógica a ser definida).
+   - Cálculo de nota (percentual de alternativas corretas).
 
 ### Prioridade Média (Funcionalidades Core)
 
 1. ⏳ **Gamificação (Pontos e Moedas):**
    - ✅ Lógica para atribuir pontos ao assistir conteúdo (implementado).
-   - Lógica para atribuir pontos/moedas ao completar módulos/trilhas, acertar avaliações.
+   - ✅ Lógica para atribuir pontos/moedas ao acertar avaliações (implementado).
+   - Lógica para atribuir pontos/moedas ao completar módulos/trilhas.
    - ✅ Tabela `Pontuacao` (implementado).
-   - Tabela `Moedas`.
+   - ✅ Tabela `Moedas` (implementado).
    - ✅ Atualização dos pontos no perfil do `Usuario` (implementado).
 2. ⏳ **Certificação:**
    - ✅ Lógica para verificar conclusão e aprovação em trilhas (implementado no método `obterProgresso`).
    - Geração/emissão de `Certificados` (pode ser apenas o registro no DB inicialmente).
-3. ✅ **Painel do Gestor (Endpoints):** Os endpoints existentes já suportam as principais ações de gestão de conteúdo. 
+3. ✅ **Painel do Gestor (Endpoints):** Os endpoints existentes já suportam as principais ações de gestão de conteúdo.
 4. **CRUD Desafios e Etapas:** Rotas e controllers para gerenciar desafios gamificados.
-5. **Avaliações em Desafios:** Associar `Avaliacao` a `DesafioEtapa`.
+5. ✅ **Avaliações em Desafios:** Associar `Avaliacao` a `DesafioEtapa` (implementado).
 
 ### Prioridade Baixa (Melhorias e Funcionalidades Adicionais)
 
@@ -164,16 +167,23 @@ Este documento descreve a arquitetura, funcionalidades e o roadmap de desenvolvi
   - `/trilhas/{id}/iniciar` (POST) - iniciar trilha para o usuário autenticado
   - `/trilhas/{id}/progresso` (GET) - obter progresso do usuário autenticado
 
-### Planejados
-
 - **Avaliações:**
-  - `/avaliacoes` (GET, POST)
-  - `/avaliacoes/{id}` (GET, PUT, DELETE)
-  - `/avaliacoes/{avaliacaoId}/questoes` (GET, POST)
-  - `/questoes/{id}` (GET, PUT, DELETE)
-  - `/questoes/{questaoId}/alternativas` (GET, POST)
-  - `/alternativas/{id}` (GET, PUT, DELETE)
-  - `/avaliacoes/{avaliacaoId}/respostas` (POST) - submeter respostas
+  - `/avaliacoes` (GET)
+  - `/avaliacoes` (POST) - requer gestor/admin
+  - `/avaliacoes/{id}` (GET)
+  - `/avaliacoes/{id}` (PUT) - requer gestor/admin
+  - `/avaliacoes/{id}` (DELETE) - requer gestor/admin
+  - `/avaliacoes/{id}/responder` (POST) - submeter respostas de avaliação
+  - `/avaliacoes/{id}/questoes` (GET) - listar questões de uma avaliação
+  - `/avaliacoes/{id}/questoes` (POST) - criar questão para avaliação (requer gestor/admin)
+  - `/questoes/{id}` (PUT) - atualizar questão (requer gestor/admin)
+  - `/questoes/{id}` (DELETE) - excluir questão (requer gestor/admin)
+  - `/questoes/{id}/alternativas` (GET) - listar alternativas de uma questão
+  - `/questoes/{id}/alternativas` (POST) - criar alternativa para questão (requer gestor/admin)
+  - `/alternativas/{id}` (PUT) - atualizar alternativa (requer gestor/admin)
+  - `/alternativas/{id}` (DELETE) - excluir alternativa (requer gestor/admin)
+
+### Planejados
 
 - **Desafios e Recompensas:**
   - `/desafios` (GET, POST)
@@ -190,7 +200,7 @@ Este documento descreve a arquitetura, funcionalidades e o roadmap de desenvolvi
 2. ✅ Implementar o CRUD para `Trilhas de Aprendizagem`. (Concluído)
 3. ✅ Implementar a associação Módulo-Trilha (`ItemTrilha`). (Concluído)
 4. ✅ Implementar o rastreamento de progresso básico (`ConteudoCheck`, `TrilhaProgressoUsuario`). (Concluído)
-5. Implementar o Sistema de Avaliação (CRUD Avaliações, Questões e Alternativas).
+5. ✅ Implementar o Sistema de Avaliação (CRUD Avaliações, Questões e Alternativas). (Concluído)
 6. Desenvolver a funcionalidade completa de Certificados.
-7. Implementar a funcionalidade de Moedas para a loja de recompensas.
+7. Implementar a funcionalidade de lógica de resgate de Moedas para a loja de recompensas.
 8. Desenvolver o sistema de Desafios e Etapas.
