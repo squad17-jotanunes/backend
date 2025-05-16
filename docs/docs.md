@@ -101,25 +101,25 @@ Este documento descreve a arquitetura, funcionalidades e o roadmap de desenvolvi
 
 ### Prioridade Média (Funcionalidades Core)
 
-1. ⏳ **Gamificação (Pontos e Moedas):**
+1. ✅ **Gamificação (Pontos e Moedas):**
    - ✅ Lógica para atribuir pontos ao assistir conteúdo (implementado).
    - ✅ Lógica para atribuir pontos/moedas ao acertar avaliações (implementado).
-   - Lógica para atribuir pontos/moedas ao completar módulos/trilhas.
+   - ✅ Lógica para atribuir pontos/moedas ao completar módulos/trilhas (implementado).
    - ✅ Tabela `Pontuacao` (implementado).
    - ✅ Tabela `Moedas` (implementado).
    - ✅ Atualização dos pontos no perfil do `Usuario` (implementado).
-2. ⏳ **Certificação:**
+2. ✅ **Certificação:**
    - ✅ Lógica para verificar conclusão e aprovação em trilhas (implementado no método `obterProgresso`).
-   - Geração/emissão de `Certificados` (pode ser apenas o registro no DB inicialmente).
+   - ✅ Geração/emissão de `Certificados` (implementado).
 3. ✅ **Painel do Gestor (Endpoints):** Os endpoints existentes já suportam as principais ações de gestão de conteúdo.
-4. **CRUD Desafios e Etapas:** Rotas e controllers para gerenciar desafios gamificados.
+4. ✅ **CRUD Desafios e Etapas:** Rotas e controllers para gerenciar desafios gamificados (implementado).
 5. ✅ **Avaliações em Desafios:** Associar `Avaliacao` a `DesafioEtapa` (implementado).
 
 ### Prioridade Baixa (Melhorias e Funcionalidades Adicionais)
 
-1. **Loja de Recompensas:**
-   - CRUD Recompensas.
-   - Lógica para resgate (`UsuarioRecompensa`) usando moedas.
+1. ✅ **Loja de Recompensas:**
+   - ✅ CRUD Recompensas (implementado).
+   - ✅ Lógica para resgate (`UsuarioRecompensa`) usando moedas (implementado).
 2. **Relatórios:** Endpoints para exportar dados de progresso, pontuações, etc.
 3. **Melhorias de Segurança:** MFA (Multi-Factor Authentication), logs de auditoria detalhados.
 4. **Otimizações de Performance:** Indexação de banco de dados, caching.
@@ -183,16 +183,36 @@ Este documento descreve a arquitetura, funcionalidades e o roadmap de desenvolvi
   - `/alternativas/{id}` (PUT) - atualizar alternativa (requer gestor/admin)
   - `/alternativas/{id}` (DELETE) - excluir alternativa (requer gestor/admin)
 
-### Planejados
+- **Certificados:**
+  - `/certificados` (GET) - listar todos os certificados (requer gestor/admin)
+  - `/certificados/usuario/:id` (GET) - listar certificados de um usuário específico
+  - `/certificados/:id` (GET) - obter detalhes de um certificado específico
+  - `/certificados/emitir/:trilhaId` (POST) - emitir certificado para uma trilha concluída
+  - `/certificados/:id/download` (GET) - gerar e baixar o PDF do certificado
 
-- **Desafios e Recompensas:**
-  - `/desafios` (GET, POST)
-  - `/desafios/{id}` (GET, PUT, DELETE)
-  - `/desafios/{id}/etapas` (GET, POST)
-  - `/etapas/{id}` (GET, PUT, DELETE)
-  - `/recompensas` (GET, POST)
-  - `/recompensas/{id}` (GET, PUT, DELETE)
-  - `/recompensas/resgatar/{id}` (POST)
+- **Desafios:**
+  - `/desafios` (GET)
+  - `/desafios` (POST) - requer gestor/admin
+  - `/desafios/{id}` (GET)
+  - `/desafios/{id}` (PUT) - requer gestor/admin
+  - `/desafios/{id}` (DELETE) - requer gestor/admin
+  - `/desafios/{id}/etapas` (GET)
+  - `/desafios/{id}/etapas` (POST) - requer gestor/admin
+  - `/desafios/etapas/{id}` (PUT) - requer gestor/admin
+  - `/desafios/etapas/{id}` (DELETE) - requer gestor/admin
+
+- **Recompensas:**
+  - `/recompensas` (GET)
+  - `/recompensas` (POST) - requer gestor/admin
+  - `/recompensas/{id}` (GET)
+  - `/recompensas/{id}` (PUT) - requer gestor/admin
+  - `/recompensas/{id}` (DELETE) - requer gestor/admin
+  - `/recompensas/{id}/resgatar` (POST)
+  - `/recompensas/usuario/minhas` (GET) - recompensas do usuário autenticado
+  - `/recompensas/usuario/{id}` (GET) - recompensas de um usuário específico (requer gestor/admin)
+  - `/recompensas/saldo/moedas` (GET) - saldo de moedas do usuário autenticado
+  - `/recompensas/saldo/usuario/{id}` (GET) - saldo de moedas de um usuário específico (requer gestor/admin)
+  - `/recompensas/resgate/{id}/status` (PUT) - alterar status de um resgate (requer gestor/admin)
 
 ## 6. Próximos Passos Imediatos
 
@@ -201,6 +221,6 @@ Este documento descreve a arquitetura, funcionalidades e o roadmap de desenvolvi
 3. ✅ Implementar a associação Módulo-Trilha (`ItemTrilha`). (Concluído)
 4. ✅ Implementar o rastreamento de progresso básico (`ConteudoCheck`, `TrilhaProgressoUsuario`). (Concluído)
 5. ✅ Implementar o Sistema de Avaliação (CRUD Avaliações, Questões e Alternativas). (Concluído)
-6. Desenvolver a funcionalidade completa de Certificados.
-7. Implementar a funcionalidade de lógica de resgate de Moedas para a loja de recompensas.
-8. Desenvolver o sistema de Desafios e Etapas.
+6. ✅ Desenvolver a funcionalidade completa de Certificados. (Concluído)
+7. ✅ Implementar a funcionalidade de lógica de resgate de Moedas para a loja de recompensas. (Concluído)
+8. ✅ Desenvolver o sistema de Desafios e Etapas. (Concluído)

@@ -1,7 +1,7 @@
+import { randomBytes } from 'node:crypto';
 import { compare } from 'bcrypt';
 import type { Context } from 'hono';
 import { sign } from 'hono/jwt';
-import { randomBytes } from 'node:crypto';
 import { prisma } from '../lib/db';
 
 // Configuração do segredo para JWT

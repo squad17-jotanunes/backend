@@ -113,7 +113,7 @@ vi.mock('../middleware/verificarTokenJwt', () => {
 vi.mock('../middleware/verificarAutoridade', () => {
 	return {
 		verificarAutoridade: vi.fn().mockImplementation(() => {
-			return async (c, next) => {
+			return async (c: Context, next: () => Promise<void>): Promise<void> => {
 				// Simula verificação de autoridade passando para o próximo middleware
 				await next();
 			};
@@ -170,6 +170,7 @@ vi.mock('../lib/db', () => {
 	};
 });
 
+import type { Context } from 'hono';
 // Importando o prisma mockado
 import { prisma } from '../lib/db';
 
@@ -314,7 +315,7 @@ describe('Rotas de trilhas de aprendizagem', () => {
 			).mockResolvedValue(progressoMock);
 
 			// Fazer a requisição POST para iniciar a trilha
-			const res = await client[':id']['iniciar'].$post({
+			const res = await client[':id'].iniciar.$post({
 				param: { id: '1' },
 				headers: { Authorization: 'Bearer fake-token' }
 			});

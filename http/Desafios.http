@@ -1,0 +1,63 @@
+@baseUrl = http://localhost:3000
+@token = SEU_TOKEN_JWT_AQUI
+@gestor_token = SEU_TOKEN_GESTOR_JWT_AQUI
+
+### Listar todos os desafios
+GET {{baseUrl}}/desafios
+Authorization: Bearer {{token}}
+
+### Buscar desafio por ID
+GET {{baseUrl}}/desafios/1
+Authorization: Bearer {{token}}
+
+### Criar novo desafio (requer gestor/admin)
+POST {{baseUrl}}/desafios
+Authorization: Bearer {{gestor_token}}
+Content-Type: application/json
+
+{
+  "nome": "Desafio de Segurança no Trabalho",
+  "descricao": "Teste seus conhecimentos sobre normas de segurança no trabalho e EPIs"
+}
+
+### Atualizar desafio (requer gestor/admin)
+PUT {{baseUrl}}/desafios/1
+Authorization: Bearer {{gestor_token}}
+Content-Type: application/json
+
+{
+  "nome": "Desafio de Segurança no Trabalho (atualizado)",
+  "descricao": "Teste seus conhecimentos sobre normas de segurança no trabalho e EPIs (atualizado)"
+}
+
+### Excluir desafio (requer gestor/admin)
+DELETE {{baseUrl}}/desafios/1
+Authorization: Bearer {{gestor_token}}
+
+### Listar etapas de um desafio
+GET {{baseUrl}}/desafios/1/etapas
+Authorization: Bearer {{token}}
+
+### Criar etapa para um desafio (requer gestor/admin)
+POST {{baseUrl}}/desafios/1/etapas
+Authorization: Bearer {{gestor_token}}
+Content-Type: application/json
+
+{
+  "avaliacao_id": 1,
+  "ordem": 1
+}
+
+### Atualizar etapa de desafio (requer gestor/admin)
+PUT {{baseUrl}}/desafios/etapas/1
+Authorization: Bearer {{gestor_token}}
+Content-Type: application/json
+
+{
+  "avaliacao_id": 2,
+  "ordem": 2
+}
+
+### Excluir etapa de desafio (requer gestor/admin)
+DELETE {{baseUrl}}/desafios/etapas/1
+Authorization: Bearer {{gestor_token}}

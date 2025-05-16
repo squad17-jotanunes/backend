@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:3000
+@token = SEU_TOKEN_JWT_AQUI
+@gestor_token = SEU_TOKEN_GESTOR_JWT_AQUI
+
+### Listar todas as recompensas
+GET {{baseUrl}}/recompensas
+Authorization: Bearer {{token}}
+
+### Buscar recompensa por ID
+GET {{baseUrl}}/recompensas/1
+Authorization: Bearer {{token}}
+
+### Criar nova recompensa (requer gestor/admin)
+POST {{baseUrl}}/recompensas
+Authorization: Bearer {{gestor_token}}
+Content-Type: application/json
+
+{
+  "nome": "Dia de folga",
+  "descricao": "Um dia de folga para o colaborador",
+  "moedas_requeridas": 1000,
+  "tipo": "BENEFICIO",
+  "quantidade_disponivel": 5
+}
+
+### Atualizar recompensa (requer gestor/admin)
+PUT {{baseUrl}}/recompensas/1
+Authorization: Bearer {{gestor_token}}
+Content-Type: application/json
+
+{
+  "nome": "Dia de folga (atualizado)",
+  "descricao": "Um dia de folga para o colaborador (descrição atualizada)",
+  "moedas_requeridas": 1200
+}
+
+### Excluir recompensa (requer gestor/admin)
+DELETE {{baseUrl}}/recompensas/1
+Authorization: Bearer {{gestor_token}}
+
+### Resgatar recompensa
+POST {{baseUrl}}/recompensas/1/resgatar
+Authorization: Bearer {{token}}
+
+### Listar minhas recompensas
+GET {{baseUrl}}/recompensas/usuario/minhas
+Authorization: Bearer {{token}}
+
+### Verificar meu saldo de moedas
+GET {{baseUrl}}/recompensas/saldo/moedas
+Authorization: Bearer {{token}}
+
+### Listar recompensas de um usuário específico (requer gestor/admin)
+GET {{baseUrl}}/recompensas/usuario/1
+Authorization: Bearer {{gestor_token}}
+
+### Verificar saldo de moedas de um usuário específico (requer gestor/admin)
+GET {{baseUrl}}/recompensas/saldo/usuario/1
+Authorization: Bearer {{gestor_token}}
+
+### Alterar status de resgate (requer gestor/admin)
+PUT {{baseUrl}}/recompensas/resgate/1/status
+Authorization: Bearer {{gestor_token}}
+Content-Type: application/json
+
+{
+  "status": "ENTREGUE"
+}

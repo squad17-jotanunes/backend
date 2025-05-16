@@ -1,0 +1,50 @@
+###
+# @name loginAdmin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "1",
+    "senha": "admin"
+}
+
+###
+# @name loginColaborador
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "matricula": "2",
+    "senha": "senha123"
+}
+
+### -------------------- CERTIFICADOS --------------------
+
+###
+# @name listarCertificados
+GET http://localhost:3000/certificados
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name buscarCertificadosPorUsuario
+# Substitua {id} pelo ID do usuário que deseja consultar os certificados
+GET http://localhost:3000/certificados/usuario/2
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name buscarCertificadoPorId
+# Substitua {id} pelo ID do certificado que deseja consultar
+GET http://localhost:3000/certificados/1
+Authorization: Bearer {{loginAdmin.response.body.token}}
+
+###
+# @name emitirCertificado
+# Substitua {trilhaId} pelo ID da trilha que o usuário completou
+POST http://localhost:3000/certificados/emitir/1
+Authorization: Bearer {{loginColaborador.response.body.token}}
+
+###
+# @name downloadCertificadoPDF
+# Substitua {id} pelo ID do certificado
+GET http://localhost:3000/certificados/1/download
+Authorization: Bearer {{loginColaborador.response.body.token}}

@@ -1,8 +1,11 @@
 import { Hono } from 'hono';
 import authRoutes from './routes/auth';
 import avaliacoesRoutes from './routes/avaliacoes';
+import certificadosRoutes from './routes/certificados';
 import conteudosRoutes from './routes/conteudos';
+import desafiosRoutes from './routes/desafios';
 import modulosRoutes from './routes/modulos';
+import recompensasRoutes from './routes/recompensas';
 import trilhasRoutes from './routes/trilhas';
 import usuariosRoutes from './routes/usuarios';
 
@@ -21,9 +24,11 @@ router.route('/modulos', modulosRoutes);
 router.route('/conteudos', conteudosRoutes);
 router.route('/trilhas', trilhasRoutes);
 router.route('/avaliacoes', avaliacoesRoutes);
+router.route('/certificados', certificadosRoutes);
+router.route('/recompensas', recompensasRoutes);
+router.route('/desafios', desafiosRoutes);
 
 // Aqui podem ser adicionadas outras rotas no futuro:
-// router.route("/desafios", desafiosRoutes);
 // etc.
 
 export default router;
