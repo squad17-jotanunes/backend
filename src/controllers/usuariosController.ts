@@ -2,21 +2,24 @@ import { hash } from 'bcrypt';
 import type { Context } from 'hono';
 import { prisma } from '../lib/db';
 
+const usuarioSelectFields = {
+	id: true,
+	nome: true,
+	matricula: true,
+	setor: true,
+	funcao: true,
+	autoridade: true,
+	pontos: true,
+	gestor_id: true
+};
+
 export class UsuariosController {
 	// Listar todos os usuários
 	async listarTodos(c: Context): Promise<Response> {
 		try {
 			// Buscar todos os usuários (excluindo a senha por segurança)
 			const usuarios = await prisma.usuario.findMany({
-				select: {
-					id: true,
-					nome: true,
-					matricula: true,
-					setor: true,
-					autoridade: true,
-					pontos: true,
-					gestor_id: true
-				}
+				select: usuarioSelectFields
 			});
 
 			return c.json(usuarios);
@@ -43,6 +46,7 @@ export class UsuariosController {
 					nome: true,
 					matricula: true,
 					setor: true,
+					funcao: true,
 					autoridade: true,
 					pontos: true,
 					gestor_id: true
@@ -72,6 +76,7 @@ export class UsuariosController {
 				!dados.matricula ||
 				!dados.senha ||
 				!dados.setor ||
+				!dados.funcao ||
 				!dados.autoridade
 			) {
 				return c.json({ error: 'Dados incompletos' }, 400);
@@ -96,6 +101,7 @@ export class UsuariosController {
 					matricula: dados.matricula,
 					senha: senhaHash,
 					setor: dados.setor,
+					funcao: dados.funcao,
 					autoridade: dados.autoridade,
 					gestor_id: gestorId // Registra qual gestor criou o usuário
 				},
@@ -104,6 +110,7 @@ export class UsuariosController {
 					nome: true,
 					matricula: true,
 					setor: true,
+					funcao: true,
 					autoridade: true,
 					pontos: true,
 					gestor_id: true
@@ -142,12 +149,14 @@ export class UsuariosController {
 				matricula: string;
 				senha: string;
 				setor: string;
+				funcao: string;
 				autoridade: string;
 			}> = {};
 
 			// Campos que qualquer usuário pode atualizar em seu próprio perfil
 			if (dados.nome) dadosAtualizacao.nome = dados.nome;
 			if (dados.setor) dadosAtualizacao.setor = dados.setor;
+			if (dados.funcao) dadosAtualizacao.funcao = dados.funcao;
 
 			// Senha requer hash se fornecida
 			if (dados.senha) {
@@ -182,6 +191,7 @@ export class UsuariosController {
 					nome: true,
 					matricula: true,
 					setor: true,
+					funcao: true,
 					autoridade: true,
 					pontos: true,
 					gestor_id: true

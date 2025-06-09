@@ -31,6 +31,7 @@ Content-Type: application/json
     "matricula": "colab123",
     "senha": "senha123",
     "setor": "TI",
+    "funcao": "Desenvolvedor",
     "autoridade": "colaborador"
 }
 

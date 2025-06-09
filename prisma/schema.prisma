@@ -17,6 +17,7 @@ model Usuario {
   matricula  String @unique // Alterado para String conforme diagrama
   senha      String
   setor      String
+  funcao     String // Campo obrigatório para função específica do usuário
   pontos     Int    @default(0)
   autoridade String // Renomeado de 'funcao' para alinhar com o diagrama
 

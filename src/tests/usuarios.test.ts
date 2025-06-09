@@ -13,6 +13,7 @@ type Usuario = {
 	matricula: string;
 	senha: string;
 	setor: string;
+	funcao: string;
 	pontos: number;
 	autoridade: string;
 	email?: string;
@@ -25,6 +26,7 @@ type CreateUsuario = {
 	matricula: string;
 	senha: string;
 	setor: string;
+	funcao: string;
 	autoridade: string;
 };
 
@@ -145,6 +147,7 @@ describe('Rotas de usuários', () => {
 					nome: 'Usuário 1',
 					matricula: '12345',
 					setor: 'TI',
+					funcao: 'Desenvolvedor',
 					autoridade: 'colaborador',
 					pontos: 0,
 					gestor_id: 2,
@@ -155,6 +158,7 @@ describe('Rotas de usuários', () => {
 					nome: 'Usuário 2',
 					matricula: '67890',
 					setor: 'RH',
+					funcao: 'Analista de RH',
 					autoridade: 'gestor',
 					pontos: 100,
 					gestor_id: null,
@@ -201,6 +205,7 @@ describe('Rotas de usuários', () => {
 				nome: 'Usuário Teste',
 				matricula: '12345',
 				setor: 'TI',
+				funcao: 'Desenvolvedor',
 				autoridade: 'colaborador',
 				pontos: 50,
 				gestor_id: 2,
@@ -227,6 +232,7 @@ describe('Rotas de usuários', () => {
 					nome: true,
 					matricula: true,
 					setor: true,
+					funcao: true,
 					autoridade: true,
 					pontos: true,
 					gestor_id: true
@@ -271,6 +277,7 @@ describe('Rotas de usuários', () => {
 				matricula: 'ABC123',
 				senha: 'senha123',
 				setor: 'Engenharia',
+				funcao: 'Estagiário',
 				autoridade: 'colaborador'
 			};
 
@@ -279,6 +286,7 @@ describe('Rotas de usuários', () => {
 				nome: 'Novo Usuário',
 				matricula: 'ABC123',
 				setor: 'Engenharia',
+				funcao: 'Estagiário',
 				autoridade: 'colaborador',
 				pontos: 0,
 				gestor_id: 1,
@@ -309,6 +317,7 @@ describe('Rotas de usuários', () => {
 					matricula: novoUsuarioData.matricula,
 					senha: 'senha_hasheada',
 					setor: novoUsuarioData.setor,
+					funcao: novoUsuarioData.funcao,
 					autoridade: novoUsuarioData.autoridade,
 					gestor_id: 1
 				},
@@ -317,6 +326,7 @@ describe('Rotas de usuários', () => {
 					nome: true,
 					matricula: true,
 					setor: true,
+					funcao: true,
 					autoridade: true,
 					pontos: true,
 					gestor_id: true
@@ -351,6 +361,7 @@ describe('Rotas de usuários', () => {
 				matricula: 'ABC123',
 				senha: 'senha123',
 				setor: 'Engenharia',
+				funcao: 'Estagiário', // Adicionado o campo funcao
 				autoridade: 'colaborador'
 			};
 
@@ -361,6 +372,7 @@ describe('Rotas de usuários', () => {
 				nome: 'Usuário Existente',
 				senha: 'hash_senha',
 				setor: 'TI',
+				funcao: 'Desenvolvedor', // Adicionado o campo funcao
 				autoridade: 'colaborador',
 				pontos: 0,
 				gestor_id: null
@@ -387,6 +399,7 @@ describe('Rotas de usuários', () => {
 				matricula: 'ABC123',
 				senha: 'senha_antiga_hash',
 				setor: 'TI',
+				funcao: 'Desenvolvedor',
 				autoridade: 'colaborador',
 				pontos: 0,
 				gestor_id: 2
@@ -394,7 +407,8 @@ describe('Rotas de usuários', () => {
 
 			const dadosAtualizacao = {
 				nome: 'Usuário Atualizado',
-				setor: 'Engenharia'
+				setor: 'Engenharia',
+				funcao: 'Engenheiro de Software'
 			};
 
 			const usuarioAtualizado: Usuario = {
@@ -402,6 +416,7 @@ describe('Rotas de usuários', () => {
 				nome: 'Usuário Atualizado',
 				matricula: 'ABC123',
 				setor: 'Engenharia',
+				funcao: 'Engenheiro de Software',
 				autoridade: 'colaborador',
 				pontos: 0,
 				gestor_id: 2,
@@ -435,6 +450,7 @@ describe('Rotas de usuários', () => {
 					nome: true,
 					matricula: true,
 					setor: true,
+					funcao: true,
 					autoridade: true,
 					pontos: true,
 					gestor_id: true
@@ -468,6 +484,9 @@ describe('Rotas de usuários', () => {
 				}
 			});
 
+			expect(vi.mocked(prisma.usuario.findUnique)).toHaveBeenCalledWith({
+				where: { id: 999 }
+			});
 			expect(res.status).toBe(404);
 			const body = await res.json();
 			expect(body).toHaveProperty('error', 'Usuário não encontrado');
@@ -480,6 +499,7 @@ describe('Rotas de usuários', () => {
 				matricula: 'ABC123',
 				senha: 'senha_antiga_hash',
 				setor: 'TI',
+				funcao: 'Desenvolvedor',
 				autoridade: 'colaborador',
 				pontos: 0,
 				gestor_id: null
@@ -501,6 +521,7 @@ describe('Rotas de usuários', () => {
 				nome: 'Usuário Teste',
 				matricula: 'ABC123',
 				setor: 'TI',
+				funcao: 'Desenvolvedor',
 				autoridade: 'colaborador',
 				pontos: 0,
 				gestor_id: null,
@@ -522,7 +543,16 @@ describe('Rotas de usuários', () => {
 					nome: 'Usuário Teste',
 					senha: 'senha_hasheada'
 				},
-				select: expect.anything()
+				select: {
+					id: true,
+					nome: true,
+					matricula: true,
+					setor: true,
+					funcao: true,
+					autoridade: true,
+					pontos: true,
+					gestor_id: true
+				}
 			});
 		});
 	});
@@ -536,6 +566,7 @@ describe('Rotas de usuários', () => {
 				matricula: 'ABC123',
 				senha: 'senha_hash',
 				setor: 'TI',
+				funcao: 'Desenvolvedor',
 				autoridade: 'colaborador',
 				pontos: 0,
 				gestor_id: null
@@ -548,6 +579,7 @@ describe('Rotas de usuários', () => {
 				matricula: 'ABC123',
 				senha: 'senha_hash',
 				setor: 'TI',
+				funcao: 'Desenvolvedor',
 				autoridade: 'colaborador',
 				pontos: 0,
 				gestor_id: null
@@ -592,6 +624,9 @@ describe('Rotas de usuários', () => {
 				}
 			});
 
+			expect(vi.mocked(prisma.usuario.findUnique)).toHaveBeenCalledWith({
+				where: { id: 999 }
+			});
 			expect(res.status).toBe(404);
 			const body = await res.json();
 			expect(body).toHaveProperty('error', 'Usuário não encontrado');
@@ -605,6 +640,7 @@ describe('Rotas de usuários', () => {
 				matricula: 'ABC123',
 				senha: 'senha_hash',
 				setor: 'TI',
+				funcao: 'Desenvolvedor',
 				autoridade: 'colaborador',
 				pontos: 0,
 				gestor_id: null
